@@ -22,15 +22,23 @@ Comprehensive overview of marketing metrics and prediction trends.
 Interactive data table for customer profile inspection and preparation.
 ![Dataset Explorer](./docs/screenshots/dataset_explorer.png)
 
-### 3. Model Training Center
+### 3. Prediction Detail
+Live interactive view for individual customer classification and impact factor analysis.
+![Prediction Detail](./docs/screenshots/prediction_detail.png)
+
+### 4. Model Training Center
 Algorithm selection and real-time training monitor with log output.
 ![Model Training](./docs/screenshots/model_training.png)
 
-### 4. Model Benchmarking
+### 5. Performance Heatmap (Premium)
+Multi-dimensional visualization of model ROI across various demographic segments.
+![Segment Heatmap](./docs/screenshots/segment_heatmap.png)
+
+### 6. Model Benchmarking
 Multi-metric comparison of algorithm performances across different parameters.
 ![Model Comparison](./docs/screenshots/model_comparison.png)
 
-### 5. Experiment Tracking
+### 7. Experiment Tracking
 Timeline and historical data for all training experiments.
 ![Experiment History](./docs/screenshots/experiment_history.png)
 

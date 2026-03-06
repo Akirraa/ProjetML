@@ -7,7 +7,8 @@ import {
     History,
     Bell,
     Search,
-    UserCircle
+    UserCircle,
+    UserPlus
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -17,6 +18,7 @@ import DatasetExplorer from './pages/DatasetExplorer';
 import ModelTraining from './pages/ModelTraining';
 import ModelComparison from './pages/ModelComparison';
 import ExperimentHistory from './pages/ExperimentHistory';
+import PredictCustomer from './pages/PredictCustomer';
 
 function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -27,6 +29,7 @@ function App() {
         { id: 'training', label: 'Model Training', icon: Cpu },
         { id: 'comparison', label: 'Model Comparison', icon: BarChart3 },
         { id: 'history', label: 'Experiment History', icon: History },
+        { id: 'predict', label: 'Predict Customer', icon: UserPlus },
     ];
 
     return (
@@ -51,8 +54,8 @@ function App() {
                             key={item.id}
                             onClick={() => setActiveTab(item.id)}
                             className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl transition-all duration-200 group ${activeTab === item.id
-                                    ? 'bg-brand-600/10 text-brand-400 border border-brand-500/20 shadow-lg shadow-brand-500/5'
-                                    : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'
+                                ? 'bg-brand-600/10 text-brand-400 border border-brand-500/20 shadow-lg shadow-brand-500/5'
+                                : 'text-slate-400 hover:text-slate-100 hover:bg-slate-800/50'
                                 }`}
                         >
                             <item.icon className={`w-5 h-5 transition-colors ${activeTab === item.id ? 'text-brand-400' : 'text-slate-500 group-hover:text-slate-300'}`} />
@@ -126,6 +129,7 @@ function App() {
                             {activeTab === 'training' && <ModelTraining />}
                             {activeTab === 'comparison' && <ModelComparison />}
                             {activeTab === 'history' && <ExperimentHistory />}
+                            {activeTab === 'predict' && <PredictCustomer />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

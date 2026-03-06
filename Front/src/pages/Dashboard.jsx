@@ -176,6 +176,53 @@ const Dashboard = () => {
                     </div>
                 </div>
             </div>
+
+            {/* Visual Showcase Gallery */}
+            <section className="mt-12">
+                <div className="flex items-center justify-between mb-8">
+                    <div>
+                        <h2 className="text-2xl font-bold text-white">System <span className="text-brand-400">Showcase</span></h2>
+                        <p className="text-slate-400 text-sm mt-1">Visual overview of key features and predictive capabilities.</p>
+                    </div>
+                    <div className="flex gap-2">
+                        <div className="px-3 py-1 bg-brand-500/10 border border-brand-500/20 rounded-full text-[10px] font-bold text-brand-400 uppercase tracking-wider">7 Views Available</div>
+                    </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {[
+                        { title: "Unified Dashboard", path: "/screenshots/dashboard.png", tag: "Live" },
+                        { title: "Dataset Explorer", path: "/screenshots/dataset_explorer.png", tag: "Live" },
+                        { title: "Prediction Detail", path: "/screenshots/prediction_detail.png", tag: "Live" },
+                        { title: "Model Training", path: "/screenshots/model_training.png", tag: "Live" },
+                        { title: "Performance Heatmap", path: "/screenshots/segment_heatmap.png", tag: "Premium Mockup" },
+                        { title: "Comparison View", path: "/screenshots/model_comparison.png", tag: "Live" },
+                    ].map((shot, idx) => (
+                        <motion.div
+                            key={idx}
+                            whileHover={{ scale: 1.02, y: -5 }}
+                            className="group relative rounded-2xl overflow-hidden glass-card border-slate-800/50 cursor-pointer"
+                        >
+                            <div className="aspect-video overflow-hidden">
+                                <img
+                                    src={shot.path}
+                                    alt={shot.title}
+                                    className="w-full h-full object-cover grayscale-[20%] group-hover:grayscale-0 transition-all duration-500"
+                                />
+                            </div>
+                            <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent opacity-80 group-hover:opacity-90 transition-opacity" />
+                            <div className="absolute bottom-0 left-0 right-0 p-4">
+                                <div className="flex items-center justify-between">
+                                    <h4 className="font-bold text-sm text-white">{shot.title}</h4>
+                                    <span className={`text-[10px] px-2 py-0.5 rounded-md border ${shot.tag === 'Live' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' : 'bg-brand-500/10 border-brand-500/30 text-brand-400'}`}>
+                                        {shot.tag}
+                                    </span>
+                                </div>
+                            </div>
+                        </motion.div>
+                    ))}
+                </div>
+            </section>
         </div>
     );
 };
