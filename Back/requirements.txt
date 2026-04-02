@@ -1,0 +1,11 @@
+fastapi
+uvicorn
+pandas
+scikit-learn
+xgboost
+mlflow
+imbalanced-learn
+python-multipart
+pydantic
+matplotlib
+seaborn

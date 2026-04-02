@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/6aba9fb09d6143fe9d48ee2ee233db23/artifacts
+end_time: 1775168347534
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 6aba9fb09d6143fe9d48ee2ee233db23
+run_name: zealous-smelt-712
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775168214196
+status: 3
+tags: []
+user_id: rayan

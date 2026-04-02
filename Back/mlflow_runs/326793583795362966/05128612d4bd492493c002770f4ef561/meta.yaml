@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/05128612d4bd492493c002770f4ef561/artifacts
+end_time: 1775172969380
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 05128612d4bd492493c002770f4ef561
+run_name: glamorous-dog-300
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775172968471
+status: 4
+tags: []
+user_id: rayan

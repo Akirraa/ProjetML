@@ -6,184 +6,168 @@ import {
     Sparkles,
     ShieldCheck,
     AlertCircle,
-    RotateCcw
+    RotateCcw,
+    User,
+    Wallet,
+    Calendar,
+    PhoneCall
 } from 'lucide-react';
+import { predictCustomer as apiPredict } from '../utils/api';
 
 const PredictCustomer = () => {
-    const [formData, setFormData] = useState({
+    const defaultData = {
         age: 35,
-        income: 55000,
-        education: 'Master',
-        maritalStatus: 'Married',
-        purchaseFrequency: 12,
-        lastPurchaseDays: 45,
+        job: 'management',
+        marital: 'married',
+        education: 'tertiary',
+        default: 'no',
+        balance: 1500,
+        housing: 'no',
+        loan: 'no',
+        contact: 'cellular',
+        day: 15,
+        month: 'may',
+        duration: 200,
+        campaign: 1,
+        pdays: -1,
+        previous: 0,
+        poutcome: 'unknown',
         selectedModel: 'Random Forest'
-    });
+    };
 
+    const [formData, setFormData] = useState(defaultData);
     const [isPredicting, setIsPredicting] = useState(false);
     const [prediction, setPrediction] = useState(null);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        setFormData(prev => ({ 
+            ...prev, 
+            [name]: e.target.type === 'number' ? parseInt(value) : value 
+        }));
     };
 
-    const runPrediction = () => {
+    const runPrediction = async () => {
         setIsPredicting(true);
         setPrediction(null);
 
-        // Simulating ML model inference
-        setTimeout(() => {
-            const isPositive = Math.random() > 0.4;
+        try {
+            // Filter out selectedModel before sending to API
+            const { selectedModel, ...payload } = formData;
+            const result = await apiPredict(payload);
+            
             setPrediction({
-                status: isPositive ? 'POSITIVE' : 'NEGATIVE',
-                confidence: (85 + Math.random() * 10).toFixed(1),
-                impactFactors: [
-                    { label: 'Purchase Recency', impact: '+12%', type: 'positive' },
-                    { label: 'Income Level', impact: '+8%', type: 'positive' },
-                    { label: 'Last Campaign', impact: '-3%', type: 'negative' }
-                ]
+                status: result.prediction.toUpperCase(),
+                confidence: (result.confidence * 100).toFixed(1),
+                impactFactors: result.impactFactors || []
             });
+        } catch (err) {
+            console.error(err);
+        } finally {
             setIsPredicting(false);
-        }, 1500);
+        }
     };
 
     const resetForm = () => {
+        setFormData(defaultData);
         setPrediction(null);
     };
 
+    const InputField = ({ label, name, type = "text", options = null }) => (
+        <div className="space-y-1.5">
+            <label className="text-[11px] text-slate-500 uppercase tracking-widest font-bold ml-1">{label}</label>
+            {options ? (
+                <select
+                    name={name}
+                    value={formData[name]}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 outline-none transition-all appearance-none"
+                >
+                    {options.map(opt => <option key={opt} value={opt}>{opt}</option>)}
+                </select>
+            ) : (
+                <input
+                    type={type}
+                    name={name}
+                    value={formData[name]}
+                    onChange={handleInputChange}
+                    className="w-full bg-slate-900/50 border border-slate-800 rounded-xl px-4 py-2.5 text-sm focus:border-brand-500 outline-none transition-all"
+                />
+            )}
+        </div>
+    );
+
     return (
-        <div className="max-w-6xl mx-auto pb-20">
-            <header className="mb-10">
-                <div className="flex items-center gap-3 mb-2">
+        <div className="max-w-7xl mx-auto pb-20">
+            <header className="mb-10 text-center lg:text-left">
+                <div className="flex items-center justify-center lg:justify-start gap-3 mb-2">
                     <UserPlus className="text-brand-400 w-6 h-6" />
-                    <span className="text-brand-400 font-bold tracking-widest text-xs uppercase">Predictive Tool</span>
+                    <span className="text-brand-400 font-bold tracking-widest text-xs uppercase underline underline-offset-8">Predictive Intelligence</span>
                 </div>
-                <h1 className="text-4xl font-bold text-white">New Customer <span className="text-brand-400">Classification</span></h1>
-                <p className="text-slate-400 mt-2">Input customer attributes to simulate real-time model classification and targeted campaign strategy.</p>
+                <h1 className="text-4xl font-black text-white">Targeted <span className="text-brand-400">Classification</span></h1>
+                <p className="text-slate-400 mt-2 text-lg">Detailed attribute mapping for bank deposit subscription forecasting.</p>
             </header>
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 {/* Form Section */}
-                <div className="lg:col-span-2 space-y-6">
-                    <div className="glass-card p-8 border-slate-800/50">
-                        <div className="flex items-center justify-between mb-8">
+                <div className="lg:col-span-3 space-y-6">
+                    <div className="glass-card p-8 bg-slate-950/20">
+                        <div className="flex items-center justify-between mb-8 pb-4 border-b border-slate-800/50">
                             <h3 className="text-xl font-bold flex items-center gap-2">
                                 <ShieldCheck className="text-brand-400 w-5 h-5" />
-                                Customer Attributes
+                                Customer DNA Profile
                             </h3>
-                            <button
-                                onClick={resetForm}
-                                className="text-slate-500 hover:text-white transition-colors flex items-center gap-1 text-sm bg-slate-800/50 px-3 py-1 rounded-lg"
-                            >
-                                <RotateCcw size={14} /> Reset
+                            <button onClick={resetForm} className="text-slate-500 hover:text-white transition-colors flex items-center gap-1 text-xs bg-slate-800/50 px-3 py-1.5 rounded-lg border border-slate-700/50">
+                                <RotateCcw size={12} /> Clear Profile
                             </button>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400 block ml-1 font-medium">Age</label>
-                                <input
-                                    type="number"
-                                    name="age"
-                                    value={formData.age}
-                                    onChange={handleInputChange}
-                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 focus:border-brand-500 outline-none transition-all"
-                                />
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+                            {/* Section 1: Demographics */}
+                            <div className="space-y-6">
+                                <h4 className="text-sm font-bold text-slate-300 flex items-center gap-2"><User size={16} className="text-brand-400"/> Personal</h4>
+                                <InputField label="Age" name="age" type="number" />
+                                <InputField label="Job" name="job" options={['management', 'technician', 'entrepreneur', 'blue-collar', 'unknown', 'retired', 'admin.', 'services', 'self-employed', 'unemployed', 'housemaid', 'student']} />
+                                <InputField label="Marital" name="marital" options={['married', 'single', 'divorced']} />
+                                <InputField label="Education" name="education" options={['primary', 'secondary', 'tertiary', 'unknown']} />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400 block ml-1 font-medium">Annual Income ($)</label>
-                                <input
-                                    type="number"
-                                    name="income"
-                                    value={formData.income}
-                                    onChange={handleInputChange}
-                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 focus:border-brand-500 outline-none transition-all"
-                                />
+
+                            {/* Section 2: Financial */}
+                            <div className="space-y-6">
+                                <h4 className="text-sm font-bold text-slate-300 flex items-center gap-2"><Wallet size={16} className="text-emerald-400"/> Financial</h4>
+                                <InputField label="Balance (€)" name="balance" type="number" />
+                                <InputField label="Has Credit Default?" name="default" options={['no', 'yes']} />
+                                <InputField label="Housing Loan?" name="housing" options={['no', 'yes']} />
+                                <InputField label="Personal Loan?" name="loan" options={['no', 'yes']} />
                             </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400 block ml-1 font-medium">Education Level</label>
-                                <select
-                                    name="education"
-                                    value={formData.education}
-                                    onChange={handleInputChange}
-                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 focus:border-brand-500 outline-none transition-all appearance-none"
-                                >
-                                    <option>High School</option>
-                                    <option>Bachelor</option>
-                                    <option>Master</option>
-                                    <option>PhD</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400 block ml-1 font-medium">Marital Status</label>
-                                <select
-                                    name="maritalStatus"
-                                    value={formData.maritalStatus}
-                                    onChange={handleInputChange}
-                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 focus:border-brand-500 outline-none transition-all"
-                                >
-                                    <option>Single</option>
-                                    <option>Married</option>
-                                    <option>Divorced</option>
-                                </select>
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400 block ml-1 font-medium">Total Purchases</label>
-                                <input
-                                    type="number"
-                                    name="purchaseFrequency"
-                                    value={formData.purchaseFrequency}
-                                    onChange={handleInputChange}
-                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 focus:border-brand-500 outline-none transition-all"
-                                />
-                            </div>
-                            <div className="space-y-2">
-                                <label className="text-sm text-slate-400 block ml-1 font-medium">Days Since Last Purchase</label>
-                                <input
-                                    type="number"
-                                    name="lastPurchaseDays"
-                                    value={formData.lastPurchaseDays}
-                                    onChange={handleInputChange}
-                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-xl px-4 py-3 focus:border-brand-500 outline-none transition-all"
-                                />
+
+                            {/* Section 3: Campaign Context */}
+                            <div className="space-y-6">
+                                <h4 className="text-sm font-bold text-slate-300 flex items-center gap-2"><PhoneCall size={16} className="text-amber-400"/> Campaign</h4>
+                                <InputField label="Contact Type" name="contact" options={['cellular', 'telephone', 'unknown']} />
+                                <InputField label="Call Duration (s)" name="duration" type="number" />
+                                <InputField label="Campaign Contacts" name="campaign" type="number" />
+                                <InputField label="Prev. Outcome" name="poutcome" options={['unknown', 'other', 'failure', 'success']} />
                             </div>
                         </div>
 
-                        <div className="mt-10 border-t border-slate-800/50 pt-8">
-                            <label className="text-sm text-slate-400 block ml-1 mb-4 font-medium uppercase tracking-wider">Select Classification Algorithm</label>
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                                {['Random Forest', 'XGBoost', 'SVM', 'Logistic Regression'].map(model => (
-                                    <button
-                                        key={model}
-                                        onClick={() => setFormData(prev => ({ ...prev, selectedModel: model }))}
-                                        className={`px-4 py-3 rounded-xl border text-sm font-semibold transition-all ${formData.selectedModel === model
-                                                ? 'bg-brand-500 border-brand-400 text-white shadow-lg shadow-brand-500/20'
-                                                : 'bg-slate-900/50 border-slate-700 text-slate-400 hover:border-slate-500'
-                                            }`}
-                                    >
-                                        {model}
-                                    </button>
-                                ))}
+                        <div className="mt-12 flex flex-col md:flex-row items-center gap-6 p-6 bg-slate-900/40 rounded-2xl border border-slate-800">
+                            <div className="flex-1 text-center md:text-left">
+                                <h4 className="font-bold text-white mb-1">Production Model: <span className="text-brand-400">Random Forest v1.2</span></h4>
+                                <p className="text-xs text-slate-500">Classification utilizes pre-trained weights with 89.4% F1-Score baseline.</p>
                             </div>
-                        </div>
-
-                        <div className="mt-10">
                             <button
                                 onClick={runPrediction}
                                 disabled={isPredicting}
-                                className="w-full btn-primary h-14 text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50 disabled:scale-100"
+                                className="w-full md:w-auto px-10 btn-primary h-14 text-lg flex items-center justify-center gap-3 active:scale-[0.98] transition-all disabled:opacity-50"
                             >
                                 {isPredicting ? (
                                     <>
                                         <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                                        Analyzing Patterns...
+                                        Analyzing DNA...
                                     </>
                                 ) : (
-                                    <>
-                                        <Sparkles size={20} />
-                                        Execute Classification
-                                    </>
+                                    <><Sparkles size={20} /> Classify Customer</>
                                 )}
                             </button>
                         </div>
@@ -198,68 +182,48 @@ const PredictCustomer = () => {
                                 key="waiting"
                                 initial={{ opacity: 0 }}
                                 animate={{ opacity: 1 }}
-                                className="glass-card h-full flex flex-col items-center justify-center text-center p-8 border-dashed border-slate-700"
+                                className="glass-card h-full flex flex-col items-center justify-center text-center p-8 border-dashed border-slate-800 bg-slate-900/10 min-h-[400px]"
                             >
-                                <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mb-6">
-                                    <AlertCircle className="text-slate-600 w-8 h-8" />
+                                <div className="w-16 h-16 bg-slate-900 rounded-full flex items-center justify-center mb-6 border border-slate-800 shadow-inner">
+                                    <AlertCircle className="text-slate-700 w-8 h-8" />
                                 </div>
-                                <h3 className="text-lg font-bold text-slate-300">Awaiting Analysis</h3>
-                                <p className="text-slate-500 text-sm mt-2 max-w-[200px]">Fill in client details and run model to see prediction results.</p>
+                                <h3 className="text-lg font-bold text-slate-400">Waiting for Profile</h3>
+                                <p className="text-slate-600 text-xs mt-2 max-w-[150px]">Select attributes to generate classification score.</p>
                             </motion.div>
                         ) : (
                             <motion.div
                                 key="result"
-                                initial={{ opacity: 0, scale: 0.95 }}
-                                animate={{ opacity: 1, scale: 1 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
                                 className="space-y-6"
                             >
-                                <div className="glass-card p-1 overflow-hidden">
-                                    <div className={`p-8 rounded-[1.25rem] ${prediction.status === 'POSITIVE' ? 'bg-emerald-500/10' : 'bg-rose-500/10'}`}>
-                                        <div className="flex justify-between items-start mb-6">
-                                            <span className={`px-3 py-1 rounded-full text-[10px] font-bold tracking-widest border ${prediction.status === 'POSITIVE' ? 'border-emerald-500/30 text-emerald-400' : 'border-rose-500/30 text-rose-400'
-                                                }`}>
-                                                RESULT
-                                            </span>
-                                            <div className="text-right">
-                                                <p className="text-xs text-slate-500 font-medium tracking-wide">CONFIDENCE</p>
-                                                <p className="text-xl font-bold font-mono">{prediction.confidence}%</p>
-                                            </div>
-                                        </div>
-
-                                        <h2 className={`text-4xl font-black mb-2 tracking-tighter ${prediction.status === 'POSITIVE' ? 'text-emerald-400' : 'text-rose-400'
-                                            }`}>
-                                            {prediction.status}
-                                        </h2>
-                                        <p className="text-slate-400 text-sm leading-relaxed">
-                                            The {formData.selectedModel} algorithm classifies this customer as
-                                            <span className="text-white font-bold"> {prediction.status.toLowerCase()} </span>
-                                            likelihood for the next campaign.
-                                        </p>
+                                <div className={`glass-card p-8 text-center border-2 ${prediction.status === 'YES' ? 'border-emerald-500/50 bg-emerald-500/5' : 'border-rose-500/50 bg-rose-500/5'}`}>
+                                    <span className={`text-[10px] font-black tracking-[0.2em] uppercase px-3 py-1 rounded-full ${prediction.status === 'YES' ? 'bg-emerald-500/10 text-emerald-400' : 'bg-rose-500/10 text-rose-400'}`}>
+                                        Classification
+                                    </span>
+                                    <h2 className={`text-6xl font-black mt-4 mb-2 tracking-tighter ${prediction.status === 'YES' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                        {prediction.status === 'YES' ? 'SUBSCRIBE' : 'SKIP'}
+                                    </h2>
+                                    <div className="flex items-center justify-center gap-2 text-slate-400 text-sm font-bold">
+                                        Confidence: <span className="text-white font-mono">{prediction.confidence}%</span>
                                     </div>
                                 </div>
 
-                                <div className="glass-card p-6">
-                                    <h4 className="text-sm font-bold text-slate-300 mb-4 flex items-center gap-2">
-                                        <ChevronRight size={16} className="text-brand-400" />
-                                        Key Impact Factors
+                                <div className="glass-card p-6 border-slate-800">
+                                    <h4 className="text-xs font-black text-slate-500 uppercase tracking-widest mb-4 flex items-center gap-2">
+                                        <ChevronRight size={14} className="text-brand-400" />
+                                        Dominant Factors
                                     </h4>
                                     <div className="space-y-3">
                                         {prediction.impactFactors.map((factor, i) => (
-                                            <div key={i} className="flex items-center justify-between p-3 bg-slate-800/20 rounded-xl border border-slate-800/50">
-                                                <span className="text-sm text-slate-400 font-medium">{factor.label}</span>
-                                                <span className={`text-xs font-bold ${factor.type === 'positive' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                                            <div key={i} className="flex items-center justify-between p-3 bg-slate-950/40 rounded-xl border border-slate-800/50">
+                                                <span className="text-xs text-slate-400 font-bold">{factor.label}</span>
+                                                <span className={`text-xs font-black ${factor.type === 'positive' ? 'text-emerald-400' : 'text-rose-400'}`}>
                                                     {factor.impact}
                                                 </span>
                                             </div>
                                         ))}
                                     </div>
-                                </div>
-
-                                <div className="p-4 bg-brand-500/5 border border-brand-500/10 rounded-2xl">
-                                    <p className="text-[11px] text-slate-500 text-center leading-relaxed italic">
-                                        This prediction is simulated using pre-trained model weights.
-                                        Update hyperparameters in the Training module for more accuracy.
-                                    </p>
                                 </div>
                             </motion.div>
                         )}

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/712b31d7bf5644938a08a9d2d3a72bcd/artifacts
+end_time: 1775173521207
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 712b31d7bf5644938a08a9d2d3a72bcd
+run_name: handsome-sloth-195
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775173449668
+status: 3
+tags: []
+user_id: rayan

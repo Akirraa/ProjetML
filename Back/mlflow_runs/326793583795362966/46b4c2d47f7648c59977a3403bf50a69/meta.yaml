@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/46b4c2d47f7648c59977a3403bf50a69/artifacts
+end_time: 1775169920768
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 46b4c2d47f7648c59977a3403bf50a69
+run_name: serious-zebra-929
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1775169912198
+status: 3
+tags: []
+user_id: rayan

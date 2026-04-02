@@ -1,95 +1,35 @@
-# PredictML - Marketing Analytics Dashboard
+# PredictML Client Interface
 
-PredictML is a premium, responsive React-based dashboard designed for customer classification and marketing campaign analytics. It features a modern dark-mode aesthetic with glassmorphism effects and high-quality data visualizations to simulate a complete machine-learning workflow.
+PredictML is a React-based analytical dashboard specifically designed for customer classification and marketing campaign management.
 
-## 🚀 Key Features
+## Models and Dashboards
+- **Contextual Dashboard**: Tracking of key performance indicators and quantitative analysis of conversion volumes.
+- **Data Explorer**: Granular visualization of customer demographics and target behavior analysis.
+- **Model Orchestration**: Selection of learning algorithms (including Random Forest, SVM) and timely hyperparameter configuration.
+- **Comparative Analysis**: Technical benchmarking of algorithm performances (e.g., confusion matrices, ROC).
+- **Strategic Classification**: Downstream integration of predictive capabilities for individual profiles via the "Predict Customer" module, supplemented by technical identification of decisive factors (Dominant Factors).
 
-- **Marketing Intelligence Dashboard**: High-level overview of campaign performance and conversion probabilities.
-- **Dataset Explorer**: In-depth inspection of customer demographics and purchase history with simulated data-cleaning tools.
-- **Model Training Center**: Select algorithms, configure hyperparameters, and monitor training progress in real-time.
-- **Comparison Dashboard**: Side-by-side benchmarking of multiple models with ROC curves and metric distribution charts.
-- **Experiment History**: Historical tracking of all model runs and versioning.
+## Network Layer and Backend Integration
+Communications rely on asynchronous requests directed to a FastAPI backend. The `src/utils/api.js` module orchestrates HTTP requests, enabling real-time inference evaluation, remote machine learning execution, and querying of the local MLflow registry for reliability tracking.
 
----
+## Technical Details
+- **Core Framework**: React 19+
+- **Development Server**: Vite 7+
+- **Styling**: Tailwind CSS v4, indexed module
+- **Graphical Representation**: Recharts components
 
-## 📸 Screenshots
+## Deployment Instructions
 
-### 1. Unified Dashboard
-Comprehensive overview of marketing metrics and prediction trends.
-![Dashboard Overview](./docs/screenshots/dashboard.png)
+From the `Front` project directory:
 
-### 2. Dataset Explorer
-Interactive data table for customer profile inspection and preparation.
-![Dataset Explorer](./docs/screenshots/dataset_explorer.png)
-
-### 3. Prediction Detail
-Live interactive view for individual customer classification and impact factor analysis.
-![Prediction Detail](./docs/screenshots/prediction_detail.png)
-
-### 4. Model Training Center
-Algorithm selection and real-time training monitor with log output.
-![Model Training](./docs/screenshots/model_training.png)
-
-### 5. Performance Heatmap (Premium)
-Multi-dimensional visualization of model ROI across various demographic segments.
-![Segment Heatmap](./docs/screenshots/segment_heatmap.png)
-
-### 6. Model Benchmarking
-Multi-metric comparison of algorithm performances across different parameters.
-![Model Comparison](./docs/screenshots/model_comparison.png)
-
-### 7. Experiment Tracking
-Timeline and historical data for all training experiments.
-![Experiment History](./docs/screenshots/experiment_history.png)
-
----
-
-## 🛠️ Tech Stack
-
-- **Framework**: [React 19+](https://react.dev/)
-- **Build Tool**: [Vite 7+](https://vite.dev/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) (Vite Plugin Mode)
-- **Visualizations**: [Recharts](https://recharts.org/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **Icons**: [Lucide React](https://lucide.dev/)
-
----
-
-## 🚦 Getting Started
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn
-
-### Installation
-
-1. Clone or navigate to the project directory:
-   ```bash
-   cd c:\Users\rayan\Desktop\ProjetML\Front
-   ```
-
-2. Install dependencies:
+1. Proceed with the software installation:
    ```bash
    npm install
    ```
 
-3. Start the development server:
+2. Execute the development server:
    ```bash
    npm run dev
    ```
 
-The application will be available at `http://localhost:5173/`.
-
----
-
-## 📂 Project Structure
-
-- `src/pages`: Individual feature views (Dashboard, Training, etc.)
-- `src/components`: Reusable UI elements and layout components.
-- `src/utils/mockData.js`: Centralized data store for all simulations.
-- `src/index.css`: Tailwind v4 theme configuration and global styles.
-
----
-
-## 💡 Future Integration
-The project uses a decoupled data layer (`mockData.js`). To integrate with a real backend, simply update the methods in the utility layer to fetch from your backend API endpoints.
+The application is deployed by default at `http://localhost:5173/`.
