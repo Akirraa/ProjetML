@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks, UploadFile, File, Query
 from ..services.data_service import data_service
 from ..services.ml_service import ml_service
+from ..services.rf_analysis import rf_analysis_service
 from ..schemas.models import TrainRequest, TrainingStatusResponse, PredictRequest
 from typing import List, Dict, Any
 import mlflow
@@ -103,5 +104,12 @@ async def predict(request: PredictRequest):
         }
     except Exception as e:
         print(f"Prediction error: {e}")
-        # Fallback to smart dummy if model fails to load
         return {"prediction": "no", "confidence": 0.5, "error": str(e)}
+
+@router.get("/rf-analysis")
+async def get_rf_analysis():
+    try:
+        return rf_analysis_service.run_full_analysis()
+    except Exception as e:
+        print(f"RF Analysis Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

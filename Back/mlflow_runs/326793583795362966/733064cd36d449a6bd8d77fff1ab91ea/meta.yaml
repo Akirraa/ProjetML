@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/733064cd36d449a6bd8d77fff1ab91ea/artifacts
+end_time: 1777974231356
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 733064cd36d449a6bd8d77fff1ab91ea
+run_name: colorful-whale-882
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1777974230097
+status: 4
+tags: []
+user_id: rayan

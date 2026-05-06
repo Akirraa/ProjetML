@@ -109,8 +109,14 @@ class MLService:
                     importances = dict(zip(feature_names, model.feature_importances_.tolist()))
                 else:
                     from sklearn.inspection import permutation_importance
+                    import scipy.sparse as sp
+                    
+                    X_sample = X_test[:500]
+                    if sp.issparse(X_sample):
+                        X_sample = X_sample.toarray()
+                        
                     # Use a sample to speed up permutation importance
-                    perm_result = permutation_importance(model, X_test[:500], y_test[:500], n_repeats=5, random_state=42)
+                    perm_result = permutation_importance(model, X_sample, y_test[:500], n_repeats=5, random_state=42)
                     importances = dict(zip(feature_names, perm_result.importances_mean.tolist()))
                 
                 # Log top 10 as params for easy retrieval

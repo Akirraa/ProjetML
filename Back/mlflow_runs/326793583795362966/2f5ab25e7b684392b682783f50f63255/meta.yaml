@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/2f5ab25e7b684392b682783f50f63255/artifacts
+end_time: 1777974820626
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 2f5ab25e7b684392b682783f50f63255
+run_name: righteous-lynx-880
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1777974725350
+status: 3
+tags: []
+user_id: rayan

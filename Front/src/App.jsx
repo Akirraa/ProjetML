@@ -8,7 +8,8 @@ import {
     Bell,
     Search,
     UserCircle,
-    UserPlus
+    UserPlus,
+    Activity
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
@@ -19,6 +20,7 @@ import ModelTraining from './pages/ModelTraining';
 import ModelComparison from './pages/ModelComparison';
 import ExperimentHistory from './pages/ExperimentHistory';
 import PredictCustomer from './pages/PredictCustomer';
+import RandomForestAnalysis from './pages/RandomForestAnalysis';
 
 function App() {
     const [activeTab, setActiveTab] = useState('dashboard');
@@ -30,6 +32,7 @@ function App() {
         { id: 'comparison', label: 'Model Comparison', icon: BarChart3 },
         { id: 'history', label: 'Experiment History', icon: History },
         { id: 'predict', label: 'Predict Customer', icon: UserPlus },
+        { id: 'rf-analysis', label: 'RF Analysis', icon: Activity },
     ];
 
     return (
@@ -130,6 +133,7 @@ function App() {
                             {activeTab === 'comparison' && <ModelComparison />}
                             {activeTab === 'history' && <ExperimentHistory />}
                             {activeTab === 'predict' && <PredictCustomer />}
+                            {activeTab === 'rf-analysis' && <RandomForestAnalysis />}
                         </motion.div>
                     </AnimatePresence>
                 </div>

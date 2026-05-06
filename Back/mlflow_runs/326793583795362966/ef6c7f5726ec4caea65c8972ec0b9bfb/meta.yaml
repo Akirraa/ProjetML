@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/ef6c7f5726ec4caea65c8972ec0b9bfb/artifacts
+end_time: 1777974510686
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: ef6c7f5726ec4caea65c8972ec0b9bfb
+run_name: shivering-ox-117
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1777974509677
+status: 4
+tags: []
+user_id: rayan

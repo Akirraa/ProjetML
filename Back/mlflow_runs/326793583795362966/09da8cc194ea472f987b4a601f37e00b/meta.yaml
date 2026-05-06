@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/09da8cc194ea472f987b4a601f37e00b/artifacts
+end_time: 1777974327644
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 09da8cc194ea472f987b4a601f37e00b
+run_name: rumbling-foal-763
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1777974253299
+status: 3
+tags: []
+user_id: rayan
