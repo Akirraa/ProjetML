@@ -107,9 +107,11 @@ async def predict(request: PredictRequest):
         return {"prediction": "no", "confidence": 0.5, "error": str(e)}
 
 @router.get("/rf-analysis")
-async def get_rf_analysis():
+async def get_rf_analysis(n_estimators: int = 100, max_depth: str = "None"):
     try:
-        return rf_analysis_service.run_full_analysis()
+        # Parse max_depth
+        parsed_depth = None if max_depth == "None" else int(max_depth)
+        return rf_analysis_service.run_full_analysis(base_n_estimators=n_estimators, base_max_depth=parsed_depth)
     except Exception as e:
         print(f"RF Analysis Error: {e}")
         raise HTTPException(status_code=500, detail=str(e))

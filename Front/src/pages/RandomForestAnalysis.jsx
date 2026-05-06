@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Activity, Play, AlertCircle, TrendingUp, CheckCircle, Target, GitMerge } from 'lucide-react';
+import { Activity, Play, AlertCircle, TrendingUp, CheckCircle, Target, GitMerge, PieChart as PieIcon, BarChart3 } from 'lucide-react';
 import {
-    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell
+    BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer, Cell, LineChart, Line, Legend
 } from 'recharts';
+
 
 const RandomForestAnalysis = () => {
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
     const [error, setError] = useState(null);
+    const [config, setConfig] = useState({
+        n_estimators: 100,
+        max_depth: "None"
+    });
 
     const runAnalysis = async () => {
         setLoading(true);
         setError(null);
         try {
-            const response = await fetch('http://localhost:8000/api/rf-analysis');
+            const response = await fetch(`http://localhost:8000/api/rf-analysis?n_estimators=${config.n_estimators}&max_depth=${config.max_depth}`);
             if (!response.ok) {
                 throw new Error('Analysis failed to run.');
             }
@@ -28,8 +33,8 @@ const RandomForestAnalysis = () => {
     };
 
     const getOverfittingStatus = (bias, variance) => {
-        if (variance > 0.15) return "Overfitting (High Variance)";
-        if (bias > 0.25) return "Underfitting (High Bias)";
+        if (variance > 0.08) return "Overfitting (High Variance)";
+        if (bias > 0.09) return "Underfitting (High Bias)";
         return "Balanced";
     };
 
@@ -40,23 +45,45 @@ const RandomForestAnalysis = () => {
                     <h2 className="text-2xl font-bold tracking-tight">Random Forest Analysis</h2>
                     <p className="text-slate-400 text-sm mt-1">Deep dive into model performance, stability, and bias-variance tradeoff.</p>
                 </div>
-                <button
-                    onClick={runAnalysis}
-                    disabled={loading}
-                    className="flex items-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl transition-all shadow-lg shadow-brand-500/20 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
-                >
-                    {loading ? (
-                        <>
-                            <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-                            <span>Running Analysis...</span>
-                        </>
-                    ) : (
-                        <>
-                            <Play className="w-5 h-5" />
-                            <span>Run Full Analysis</span>
-                        </>
-                    )}
-                </button>
+                <div className="flex items-center gap-4">
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 uppercase font-bold px-1">n_estimators</label>
+                        <select 
+                            value={config.n_estimators}
+                            onChange={(e) => setConfig({...config, n_estimators: parseInt(e.target.value)})}
+                            className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-sm focus:border-brand-500 focus:outline-none transition-colors"
+                        >
+                            {[10, 50, 100, 200].map(v => <option key={v} value={v}>{v}</option>)}
+                        </select>
+                    </div>
+                    <div className="flex flex-col gap-1">
+                        <label className="text-[10px] text-slate-500 uppercase font-bold px-1">max_depth</label>
+                        <select 
+                            value={config.max_depth}
+                            onChange={(e) => setConfig({...config, max_depth: e.target.value})}
+                            className="bg-slate-900 border border-slate-800 rounded-lg px-3 py-1.5 text-sm focus:border-brand-500 focus:outline-none transition-colors"
+                        >
+                            {["None", "5", "10", "15", "20"].map(v => <option key={v} value={v}>{v}</option>)}
+                        </select>
+                    </div>
+                    <button
+                        onClick={runAnalysis}
+                        disabled={loading}
+                        className="flex items-center gap-2 px-6 py-2.5 bg-brand-600 hover:bg-brand-500 text-white rounded-xl transition-all shadow-lg shadow-brand-500/20 disabled:opacity-50 disabled:cursor-not-allowed font-medium self-end"
+                    >
+                        {loading ? (
+                            <>
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                <span>Running...</span>
+                            </>
+                        ) : (
+                            <>
+                                <Play className="w-5 h-5" />
+                                <span>Run Analysis</span>
+                            </>
+                        )}
+                    </button>
+                </div>
             </header>
 
             {error && (
@@ -115,7 +142,7 @@ const RandomForestAnalysis = () => {
                             </div>
                             <div className="space-y-4">
                                 <div>
-                                    <h4 className="text-sm font-medium text-slate-400 mb-2">Top 3 Features:</h4>
+                                    <h4 className="text-sm font-medium text-slate-400 mb-2">Top 3 Variables:</h4>
                                     <ul className="space-y-2">
                                         {results.feature_importance.top_3.map((f, i) => (
                                             <li key={i} className="flex items-center gap-3 p-3 rounded-xl bg-slate-900/50 border border-slate-800">
@@ -123,16 +150,17 @@ const RandomForestAnalysis = () => {
                                                     {i + 1}
                                                 </div>
                                                 <div>
-                                                    <p className="font-semibold text-sm">{f.feature}</p>
-                                                    <p className="text-xs text-brand-400">{(f.importance * 100).toFixed(2)}% impact</p>
+                                                    <p className="font-semibold text-sm">{f.feature.replace('num__', '').replace('cat__', '')}</p>
+                                                    <p className="text-xs text-brand-400">{(f.importance * 100).toFixed(2)}% importance score</p>
                                                 </div>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
                                 <div className="p-4 rounded-xl bg-brand-900/20 border border-brand-500/20 text-sm text-slate-300">
-                                    <span className="font-semibold text-brand-400">Insight: </span> 
-                                    These top variables generally correspond to customer engagement (duration) and financial health (balance), aligning with business understanding of conversion drivers.
+                                    <span className="font-semibold text-brand-400">Interpretation: </span> 
+                                    The model relies heavily on <strong>duration</strong> (length of last contact), which is a classic proxy for customer interest. 
+                                    <strong>Balance</strong> and <strong>age</strong> follow, suggesting financial capability and demographics are key secondary drivers.
                                 </div>
                             </div>
                         </div>
@@ -146,7 +174,7 @@ const RandomForestAnalysis = () => {
                                 2. Prediction Stability
                             </h3>
                             <div className="space-y-4">
-                                <p className="text-sm text-slate-400">Testing with 5 different random seeds:</p>
+                                <p className="text-sm text-slate-400">Model robustness across 5 different initialization seeds:</p>
                                 <div className="flex gap-2 flex-wrap">
                                     {results.stability.results.map((r, i) => (
                                         <div key={i} className="px-3 py-1.5 bg-slate-900 rounded-lg border border-slate-800 text-sm">
@@ -156,22 +184,60 @@ const RandomForestAnalysis = () => {
                                     ))}
                                 </div>
                                 <div className="pt-4 border-t border-slate-800 flex justify-between items-center">
-                                    <span className="text-sm text-slate-400">Variance across runs:</span>
+                                    <span className="text-sm text-slate-400">Accuracy Variance:</span>
                                     <span className="font-mono font-semibold text-white bg-slate-800 px-2 py-1 rounded">
-                                        {results.stability.variance.toExponential(4)}
+                                        {results.stability.variance.toFixed(8)}
                                     </span>
                                 </div>
                                 <p className="text-xs text-slate-500">
-                                    A very low variance indicates the Random Forest model is highly robust and not overly sensitive to the training split or initialization.
+                                    <strong>Verdict:</strong> The extremely low variance confirms that Random Forest is very stable on this dataset. It is not sensitive to how the data is shuffled.
                                 </p>
                             </div>
                         </section>
 
                         <section className="glass-panel p-6 border-brand-500/20">
-                            <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                            <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                                 <GitMerge className="w-5 h-5 text-brand-400" />
-                                5. Decision Tree Comparison
+                                5. Algorithm Comparison
                             </h3>
+                            
+                            <div className="grid grid-cols-2 gap-4 mb-8">
+                                <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                                    <h4 className="text-xs font-bold text-brand-400 uppercase mb-2">Random Forest</h4>
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between text-[10px]">
+                                            <span className="text-slate-500">Estimators:</span>
+                                            <span className="text-slate-300 font-mono">{results.config.n_estimators}</span>
+                                        </div>
+                                        <div className="flex justify-between text-[10px]">
+                                            <span className="text-slate-500">Max Depth:</span>
+                                            <span className="text-slate-300 font-mono">{results.config.max_depth}</span>
+                                        </div>
+                                        <div className="flex justify-between text-[10px]">
+                                            <span className="text-slate-500">Ensemble:</span>
+                                            <span className="text-emerald-500 font-bold uppercase">Bagging</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="p-3 bg-slate-900/50 rounded-xl border border-slate-800">
+                                    <h4 className="text-xs font-bold text-slate-400 uppercase mb-2">Decision Tree</h4>
+                                    <div className="space-y-1">
+                                        <div className="flex justify-between text-[10px]">
+                                            <span className="text-slate-500">Estimators:</span>
+                                            <span className="text-slate-300 font-mono">1</span>
+                                        </div>
+                                        <div className="flex justify-between text-[10px]">
+                                            <span className="text-slate-500">Max Depth:</span>
+                                            <span className="text-slate-300 font-mono">{results.config.max_depth}</span>
+                                        </div>
+                                        <div className="flex justify-between text-[10px]">
+                                            <span className="text-slate-500">Type:</span>
+                                            <span className="text-slate-400 font-bold uppercase">Single</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
                             <div className="flex items-end gap-6 mb-6">
                                 <div className="flex-1 space-y-2">
                                     <div className="flex justify-between text-sm">
@@ -192,120 +258,189 @@ const RandomForestAnalysis = () => {
                                     </div>
                                 </div>
                             </div>
-                            <p className="text-sm text-slate-400">
-                                Random Forest typically outperforms a single Decision Tree by reducing variance through ensemble learning, resulting in better generalization on unseen data.
+                            <p className="text-sm text-slate-400 italic">
+                                Random Forest outperforms the Decision Tree by ~3%. This is expected as the ensemble reduces the high variance inherent in individual trees.
                             </p>
                         </section>
                     </div>
 
-                    {/* 3. Error Analysis */}
+                    {/* 3. Error Analysis Pattern Visual */}
                     <section className="glass-panel p-6">
-                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
-                            <AlertCircle className="w-5 h-5 text-amber-400" />
-                            3. Error Analysis (Misclassified Examples)
-                        </h3>
-                        <div className="overflow-x-auto">
+                        <div className="flex items-center justify-between mb-6">
+                            <h3 className="text-lg font-semibold flex items-center gap-2">
+                                <AlertCircle className="w-5 h-5 text-amber-400" />
+                                3. Error Pattern Visualization
+                            </h3>
+                            <span className="text-xs px-2 py-1 bg-amber-500/10 text-amber-400 rounded-full border border-amber-500/20">
+                                Comparing Errors vs Correct Predictions
+                            </span>
+                        </div>
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="h-64">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <BarChart data={results.error_patterns.slice(0, 5)} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" vertical={false} />
+                                        <XAxis dataKey="feature" stroke="#94a3b8" tick={{ fontSize: 10 }} />
+                                        <YAxis stroke="#94a3b8" />
+                                        <RechartsTooltip 
+                                            contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b' }}
+                                        />
+                                        <Legend />
+                                        <Bar dataKey="error_mean" name="Mean in Errors" fill="#fbbf24" radius={[4, 4, 0, 0]} />
+                                        <Bar dataKey="correct_mean" name="Mean in Correct" fill="#10b981" radius={[4, 4, 0, 0]} />
+                                    </BarChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div className="space-y-4">
+                                <h4 className="text-sm font-medium text-slate-300">Detailed Pattern Discovery:</h4>
+                                <div className="space-y-3">
+                                    {results.error_patterns.filter(p => Math.abs(p.diff_percent) > 10).slice(0, 3).map((p, i) => (
+                                        <div key={i} className="p-3 bg-slate-900/50 rounded-lg border border-slate-800">
+                                            <div className="flex justify-between mb-1">
+                                                <span className="text-sm font-medium">{p.feature}</span>
+                                                <span className={`text-xs ${p.diff_percent > 0 ? 'text-amber-400' : 'text-emerald-400'}`}>
+                                                    {p.diff_percent > 0 ? '+' : ''}{p.diff_percent.toFixed(1)}% in errors
+                                                </span>
+                                            </div>
+                                            <p className="text-xs text-slate-500">
+                                                {p.diff_percent > 0 
+                                                    ? `Higher values of ${p.feature} are frequently associated with misclassifications.` 
+                                                    : `Lower values of ${p.feature} make the model's predictions more uncertain.`}
+                                            </p>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 overflow-x-auto">
+                            <h4 className="text-sm font-medium text-slate-400 mb-3">Sample of Failed Predictions:</h4>
                             <table className="w-full text-left text-sm whitespace-nowrap">
                                 <thead>
                                     <tr className="border-b border-slate-800 text-slate-400">
-                                        <th className="py-3 px-4 font-medium">True Label</th>
-                                        <th className="py-3 px-4 font-medium">Predicted</th>
-                                        <th className="py-3 px-4 font-medium w-full">Key Features (Original)</th>
+                                        <th className="py-2 px-4 font-medium">True</th>
+                                        <th className="py-2 px-4 font-medium">Pred</th>
+                                        <th className="py-2 px-4 font-medium">Age</th>
+                                        <th className="py-2 px-4 font-medium">Job</th>
+                                        <th className="py-2 px-4 font-medium">Balance</th>
+                                        <th className="py-2 px-4 font-medium">Duration</th>
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {results.errors.map((err, i) => {
-                                        // Pick top 3 most interesting features to display nicely
-                                        const featureKeys = Object.keys(err.features).slice(0, 4);
-                                        return (
-                                            <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/20 transition-colors">
-                                                <td className="py-3 px-4">
-                                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${err.true_label === 'yes' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                                                        {err.true_label}
-                                                    </span>
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    <span className={`px-2 py-1 rounded text-xs font-semibold ${err.predicted_label === 'yes' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
-                                                        {err.predicted_label}
-                                                    </span>
-                                                </td>
-                                                <td className="py-3 px-4">
-                                                    <div className="flex flex-wrap gap-2">
-                                                        {featureKeys.map(k => (
-                                                            <span key={k} className="text-xs bg-slate-900 px-2 py-1 rounded border border-slate-800">
-                                                                <span className="text-slate-500">{k}:</span> {String(err.features[k])}
-                                                            </span>
-                                                        ))}
-                                                        <span className="text-xs text-slate-500 px-2 py-1">...</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        )
-                                    })}
+                                    {results.errors.map((err, i) => (
+                                        <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/20">
+                                            <td className="py-2 px-4">
+                                                <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${err.true_label === 'yes' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                                    {err.true_label}
+                                                </span>
+                                            </td>
+                                            <td className="py-2 px-4">
+                                                <span className={`px-1.5 py-0.5 rounded text-[10px] font-bold uppercase ${err.predicted_label === 'yes' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}`}>
+                                                    {err.predicted_label}
+                                                </span>
+                                            </td>
+                                            <td className="py-2 px-4">{err.features.age}</td>
+                                            <td className="py-2 px-4 text-slate-400">{err.features.job}</td>
+                                            <td className="py-2 px-4">${err.features.balance}</td>
+                                            <td className="py-2 px-4 font-medium text-amber-400">{err.features.duration}s</td>
+                                        </tr>
+                                    ))}
                                 </tbody>
                             </table>
-                        </div>
-                        <div className="mt-4 p-4 rounded-xl bg-slate-900/50 border border-slate-800 text-sm text-slate-400">
-                            <strong>Pattern Observed:</strong> Errors often occur on borderline cases where duration is moderate but other socio-economic factors contradict typical patterns. The model might over-rely on 'duration'.
                         </div>
                     </section>
 
-                    {/* 4. Bias and Variance */}
+                    {/* 4. Bias and Variance Chart & Analysis */}
                     <section className="glass-panel p-6">
-                        <h3 className="text-lg font-semibold mb-4 flex items-center gap-2">
+                        <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
                             <TrendingUp className="w-5 h-5 text-purple-400" />
-                            4. Bias and Variance Tradeoff
+                            4. Bias and Variance Tradeoff Visualization
                         </h3>
-                        <div className="overflow-x-auto mb-6">
-                            <table className="w-full text-left text-sm">
-                                <thead>
-                                    <tr className="bg-slate-900/50 border-b border-slate-800 text-slate-400">
-                                        <th className="py-3 px-4 font-medium">n_estimators</th>
-                                        <th className="py-3 px-4 font-medium">max_depth</th>
-                                        <th className="py-3 px-4 font-medium">Train Accuracy</th>
-                                        <th className="py-3 px-4 font-medium">Test Accuracy</th>
-                                        <th className="py-3 px-4 font-medium">Bias</th>
-                                        <th className="py-3 px-4 font-medium">Variance</th>
-                                        <th className="py-3 px-4 font-medium">Status</th>
+                        
+                        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="lg:col-span-2 h-80">
+                                <ResponsiveContainer width="100%" height="100%">
+                                    <LineChart data={results.bias_variance.filter(r => r.n_estimators === 100)}>
+                                        <CartesianGrid strokeDasharray="3 3" stroke="#334155" />
+                                        <XAxis dataKey="max_depth" label={{ value: 'Complexity (max_depth)', position: 'insideBottom', offset: -5, fill: '#94a3b8' }} stroke="#94a3b8" />
+                                        <YAxis label={{ value: 'Accuracy', angle: -90, position: 'insideLeft', fill: '#94a3b8' }} stroke="#94a3b8" domain={[0.8, 1.0]} />
+                                        <RechartsTooltip contentStyle={{ backgroundColor: '#0f172a', borderColor: '#1e293b' }} />
+                                        <Legend verticalAlign="top" height={36}/>
+                                        <Line type="monotone" dataKey="train_accuracy" name="Train Accuracy" stroke="#8b5cf6" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                                        <Line type="monotone" dataKey="test_accuracy" name="Test Accuracy" stroke="#10b981" strokeWidth={3} dot={{ r: 4 }} activeDot={{ r: 8 }} />
+                                    </LineChart>
+                                </ResponsiveContainer>
+                            </div>
+                            <div className="space-y-4">
+                                <div className="p-4 rounded-xl bg-purple-500/5 border border-purple-500/20">
+                                    <h4 className="text-sm font-semibold text-purple-400 mb-2">Technical Summary:</h4>
+                                    <p className="text-xs text-slate-400 leading-relaxed">
+                                        As <strong>max_depth</strong> increases, the model complexity grows. 
+                                        You can see the gap between Train and Test accuracy widen, which is the definition of <strong>Variance</strong>.
+                                    </p>
+                                </div>
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="w-2 h-2 rounded-full bg-rose-500" />
+                                        <span className="text-slate-300"><strong>Overfitting:</strong> max_depth = None</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="w-2 h-2 rounded-full bg-amber-500" />
+                                        <span className="text-slate-300"><strong>Underfitting:</strong> max_depth = 3 or 5</span>
+                                    </div>
+                                    <div className="flex items-center gap-2 text-xs">
+                                        <div className="w-2 h-2 rounded-full bg-emerald-500" />
+                                        <span className="text-slate-300"><strong>Balanced:</strong> max_depth = 10 or 12</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="mt-8 overflow-y-auto max-h-[400px] rounded-xl border border-slate-800 scrollbar-hide">
+                            <table className="w-full text-left text-[11px]">
+                                <thead className="sticky top-0 z-10">
+                                    <tr className="bg-slate-900 border-b border-slate-800 text-slate-400">
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Depth</th>
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Est.</th>
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Train Acc</th>
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Test Acc</th>
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Bias</th>
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Variance</th>
+                                        <th className="py-2.5 px-4 font-bold uppercase tracking-wider">Diagnosis</th>
                                     </tr>
                                 </thead>
-                                <tbody>
+                                <tbody className="divide-y divide-slate-800/50">
                                     {results.bias_variance.map((row, i) => {
                                         const status = getOverfittingStatus(row.bias, row.variance);
-                                        let statusColor = "text-slate-300";
-                                        if (status.includes("Overfitting")) statusColor = "text-rose-400";
-                                        if (status.includes("Underfitting")) statusColor = "text-amber-400";
-                                        if (status === "Balanced") statusColor = "text-emerald-400";
+                                        let statusColor = "text-slate-400";
+                                        let rowBg = "bg-transparent";
+                                        
+                                        if (status.includes("Overfitting")) {
+                                            statusColor = "text-rose-400";
+                                            rowBg = "hover:bg-rose-500/5";
+                                        } else if (status.includes("Underfitting")) {
+                                            statusColor = "text-amber-400";
+                                            rowBg = "hover:bg-amber-500/5";
+                                        } else if (status === "Balanced") {
+                                            statusColor = "text-emerald-400";
+                                            rowBg = "hover:bg-emerald-500/5";
+                                        }
 
                                         return (
-                                            <tr key={i} className="border-b border-slate-800/50 hover:bg-slate-800/20">
-                                                <td className="py-3 px-4 font-mono">{row.n_estimators}</td>
-                                                <td className="py-3 px-4 font-mono">{row.max_depth}</td>
-                                                <td className="py-3 px-4">{(row.train_accuracy * 100).toFixed(2)}%</td>
-                                                <td className="py-3 px-4">{(row.test_accuracy * 100).toFixed(2)}%</td>
-                                                <td className="py-3 px-4 text-slate-400">{row.bias.toFixed(4)}</td>
-                                                <td className="py-3 px-4 text-slate-400">{row.variance.toFixed(4)}</td>
-                                                <td className={`py-3 px-4 font-medium ${statusColor}`}>{status}</td>
+                                            <tr key={i} className={`${rowBg} transition-colors`}>
+                                                <td className="py-2.5 px-4 font-mono">{row.max_depth}</td>
+                                                <td className="py-2.5 px-4 font-mono">{row.n_estimators}</td>
+                                                <td className="py-2.5 px-4">{(row.train_accuracy * 100).toFixed(1)}%</td>
+                                                <td className="py-2.5 px-4">{(row.test_accuracy * 100).toFixed(1)}%</td>
+                                                <td className="py-2.5 px-4 font-mono text-slate-500">{row.bias.toFixed(3)}</td>
+                                                <td className="py-2.5 px-4 font-mono text-slate-500">{row.variance.toFixed(3)}</td>
+                                                <td className={`py-2.5 px-4 font-bold ${statusColor}`}>{status}</td>
                                             </tr>
                                         )
                                     })}
                                 </tbody>
                             </table>
-                        </div>
-                        
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                                <h4 className="text-sm font-semibold text-rose-400 mb-1">Overfitting Paramétrage</h4>
-                                <p className="text-xs text-slate-400">High <code>max_depth</code> (e.g., None) with any number of estimators often leads to near 100% train accuracy but lower test accuracy (High Variance).</p>
-                            </div>
-                            <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                                <h4 className="text-sm font-semibold text-amber-400 mb-1">Underfitting Paramétrage</h4>
-                                <p className="text-xs text-slate-400">Low <code>max_depth</code> (e.g., 5) constraints the model too much, resulting in higher bias (lower train & test accuracy).</p>
-                            </div>
-                            <div className="p-4 rounded-xl bg-slate-900 border border-slate-800">
-                                <h4 className="text-sm font-semibold text-emerald-400 mb-1">Équilibré (Balanced)</h4>
-                                <p className="text-xs text-slate-400">Moderate <code>max_depth</code> (e.g., 10) with sufficient <code>n_estimators</code> (e.g., 50-100) minimizes both bias and variance effectively.</p>
-                            </div>
                         </div>
                     </section>
                 </motion.div>
