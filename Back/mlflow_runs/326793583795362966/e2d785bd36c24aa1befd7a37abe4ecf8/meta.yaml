@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/e2d785bd36c24aa1befd7a37abe4ecf8/artifacts
+end_time: 1779010310207
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: e2d785bd36c24aa1befd7a37abe4ecf8
+run_name: bouncy-fox-217
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779010269154
+status: 3
+tags: []
+user_id: unknown

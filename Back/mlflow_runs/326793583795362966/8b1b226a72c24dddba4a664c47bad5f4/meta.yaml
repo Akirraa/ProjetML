@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/8b1b226a72c24dddba4a664c47bad5f4/artifacts
+end_time: 1779009711050
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 8b1b226a72c24dddba4a664c47bad5f4
+run_name: rumbling-cow-735
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779009710993
+status: 3
+tags: []
+user_id: rayan

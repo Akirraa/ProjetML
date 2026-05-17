@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/1af3f5db145f49279287342ae230b023/artifacts
+end_time: 1779009702257
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 1af3f5db145f49279287342ae230b023
+run_name: amazing-crow-465
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779009702202
+status: 3
+tags: []
+user_id: rayan

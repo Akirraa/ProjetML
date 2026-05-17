@@ -21,6 +21,8 @@ const PARAM_DEFAULTS = {
     lr:  { C: 0.1, max_iter: 1000, penalty: 'l2' },
     svc: { C: 1.0, kernel: 'rbf', gamma: 'scale' },
     knn: { n_neighbors: 7, weights: 'distance' },
+    ada: { n_estimators: 50, learning_rate: 1.0 },
+    xgb: { n_estimators: 100, learning_rate: 0.1, max_depth: 6 },
 };
 
 const PARAM_HINTS = {
@@ -34,6 +36,7 @@ const PARAM_HINTS = {
     gamma:           'Kernel coefficient: scale, auto, or a float.',
     n_neighbors:     'Number of nearest neighbors (K) to query for each sample.',
     weights:         'Weight function: uniform (equal) or distance (closer = more weight).',
+    learning_rate:   'Weight applied to each classifier at each boosting iteration. Higher values increase contribution of each tree.',
 };
 
 const ModelTraining = () => {
@@ -91,7 +94,7 @@ const ModelTraining = () => {
 
     const castParam = (name, raw) => {
         const intKeys   = ['n_estimators', 'max_depth', 'min_samples_split', 'max_iter', 'n_neighbors'];
-        const floatKeys = ['C'];
+        const floatKeys = ['C', 'learning_rate'];
         if (intKeys.includes(name))   return parseInt(raw) || undefined;
         if (floatKeys.includes(name)) { const f = parseFloat(raw); return isNaN(f) ? raw : f; }
         return raw;

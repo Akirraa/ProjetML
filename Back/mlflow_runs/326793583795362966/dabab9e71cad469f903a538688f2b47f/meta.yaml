@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/dabab9e71cad469f903a538688f2b47f/artifacts
+end_time: 1779010862089
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: dabab9e71cad469f903a538688f2b47f
+run_name: masked-whale-368
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779010786470
+status: 3
+tags: []
+user_id: unknown

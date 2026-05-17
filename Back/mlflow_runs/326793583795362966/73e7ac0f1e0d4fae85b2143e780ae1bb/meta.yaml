@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/73e7ac0f1e0d4fae85b2143e780ae1bb/artifacts
+end_time: 1779005988134
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 73e7ac0f1e0d4fae85b2143e780ae1bb
+run_name: classy-shad-82
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779005968750
+status: 3
+tags: []
+user_id: rayan

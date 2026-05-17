@@ -69,3 +69,21 @@ export const predictCustomer = async (data) => {
     if (!response.ok) throw new Error('Inference failed');
     return response.json();
 };
+
+export const getRegistryStatus = async () => {
+    const response = await fetch(`${API_BASE_URL}/registry/status`);
+    if (!response.ok) throw new Error('Failed to fetch registry status');
+    return response.json();
+};
+
+export const simulateDrift = async () => {
+    const response = await fetch(`${API_BASE_URL}/drift/simulate`, { method: 'POST' });
+    if (!response.ok) throw new Error('Failed to simulate drift');
+    return response.json();
+};
+
+export const promoteBestModel = async () => {
+    const response = await fetch(`${API_BASE_URL}/registry/promote-best`, { method: 'POST' });
+    if (!response.ok) throw new Error('Failed to promote best model');
+    return response.json();
+};

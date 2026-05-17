@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/af107737f5f543288d7ee43e38f1b135/artifacts
+end_time: 1779010730298
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: af107737f5f543288d7ee43e38f1b135
+run_name: logistic_regression_alt
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779010724916
+status: 3
+tags: []
+user_id: rayan

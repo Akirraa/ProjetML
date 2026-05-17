@@ -1,1 +1,6 @@
 Back/out.log
+Back/mlruns/*
+Back/storage/*
+__pycache__/*
+venv/*
+

@@ -17,9 +17,11 @@ const normalizeRun = (run) => ({
     label:    `${(run['params.model_type'] || 'Unknown').split(' ')[0]} #${run.run_id.substring(0, 5).toUpperCase()}`,
     model:    run['params.model_type'] || 'Unknown',
     date:     run.start_time ? new Date(run.start_time).toLocaleDateString() : '—',
-    accuracy: run['metrics.accuracy'] != null ? +(run['metrics.accuracy'] * 100).toFixed(2) : null,
-    f1:       run['metrics.f1']       != null ? +(run['metrics.f1'] * 100).toFixed(2)       : null,
-    auc:      run['metrics.auc']      != null ? +(run['metrics.auc'] * 100).toFixed(2)      : null,
+    accuracy:  run['metrics.accuracy']  != null ? +(run['metrics.accuracy'] * 100).toFixed(2)  : null,
+    f1:        run['metrics.f1']        != null ? +(run['metrics.f1'] * 100).toFixed(2)        : null,
+    auc:       run['metrics.auc']       != null ? +(run['metrics.auc'] * 100).toFixed(2)       : null,
+    precision: run['metrics.precision'] != null ? +(run['metrics.precision'] * 100).toFixed(2) : null,
+    recall:    run['metrics.recall']    != null ? +(run['metrics.recall'] * 100).toFixed(2)    : null,
     params:   Object.fromEntries(
         Object.entries(run)
             .filter(([k]) => k.startsWith('params.') && !k.startsWith('params.imp_'))
@@ -99,13 +101,13 @@ const ModelComparison = () => {
         { subject: 'Accuracy', ...Object.fromEntries(selectedRuns.map(r => [r.label, r.accuracy])) },
         { subject: 'F1-Score', ...Object.fromEntries(selectedRuns.map(r => [r.label, r.f1])) },
         { subject: 'AUC-ROC',  ...Object.fromEntries(selectedRuns.map(r => [r.label, r.auc])) },
-        // Derived approximate "Speed" score — all same since benchmark not tracked
-        { subject: 'Precision', ...Object.fromEntries(selectedRuns.map(r => [r.label, r.f1 ? +((r.f1 * 0.98).toFixed(2)) : null])) },
+        { subject: 'Precision', ...Object.fromEntries(selectedRuns.map(r => [r.label, r.precision ?? 0])) },
+        { subject: 'Recall', ...Object.fromEntries(selectedRuns.map(r => [r.label, r.recall ?? 0])) },
     ];
 
     // Best run
-    const bestRun = selectedRuns.length
-        ? [...selectedRuns].sort((a, b) => (b.accuracy ?? 0) - (a.accuracy ?? 0))[0]
+    const bestRun = allRuns.length
+        ? [...allRuns].sort((a, b) => (b.accuracy ?? 0) - (a.accuracy ?? 0))[0]
         : null;
 
     if (isLoading) return (

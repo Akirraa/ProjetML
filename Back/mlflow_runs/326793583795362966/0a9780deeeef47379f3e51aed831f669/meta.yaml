@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/0a9780deeeef47379f3e51aed831f669/artifacts
+end_time: 1779010418695
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 0a9780deeeef47379f3e51aed831f669
+run_name: wistful-smelt-652
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779010342829
+status: 3
+tags: []
+user_id: unknown

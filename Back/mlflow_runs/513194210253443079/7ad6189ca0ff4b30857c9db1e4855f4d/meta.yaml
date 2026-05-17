@@ -1,0 +1,14 @@
+artifact_uri: file:C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/513194210253443079/7ad6189ca0ff4b30857c9db1e4855f4d/artifacts
+end_time: 1779010051943
+entry_point_name: ''
+experiment_id: '513194210253443079'
+lifecycle_stage: active
+run_id: 7ad6189ca0ff4b30857c9db1e4855f4d
+run_name: drift_check_v1
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779010051062
+status: 3
+tags: []
+user_id: rayan

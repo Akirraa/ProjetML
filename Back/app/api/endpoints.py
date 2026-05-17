@@ -6,6 +6,10 @@ from ..schemas.models import TrainRequest, TrainingStatusResponse, PredictReques
 from typing import List, Dict, Any
 import mlflow
 import pandas as pd
+from mlflow.tracking import MlflowClient
+import sys
+import os
+
 
 router = APIRouter()
 
@@ -63,26 +67,33 @@ async def get_history():
 @router.post("/predict")
 async def predict(request: PredictRequest):
     try:
-        # 1. Fetch latest "FINISHED" run from Bank_Marketing experiment
-        runs = ml_service.get_history()
-        if not runs:
-            return {"prediction": "no", "confidence": 0.5, "note": "No trained model found. Using default."}
+        from mlflow.tracking import MlflowClient
+        client = MlflowClient()
+        
+        try:
+            # Fetch the latest production model version
+            prod_versions = client.get_latest_versions("mon_modele_production", stages=["Production"])
+            if not prod_versions:
+                raise Exception("No model currently in Production stage")
             
-        latest_run = next((r for r in runs if r['status'] == 'FINISHED'), None)
-        if not latest_run:
-            raise Exception("No completed training runs available")
+            prod_version = prod_versions[0]
+            run_id = prod_version.run_id
             
-        run_id = latest_run['run_id']
-        model_uri = f"runs:/{run_id}/model"
-        model = mlflow.sklearn.load_model(model_uri)
+            # Load the model directly from the Registry (Partie 4 requirement)
+            model_uri = "models:/mon_modele_production/Production"
+            model = mlflow.sklearn.load_model(model_uri)
+            
+            # Get the run details to extract feature importances
+            prod_run = client.get_run(run_id)
+            run_params = prod_run.data.params
+            
+        except Exception as e:
+            return {"prediction": "no", "confidence": 0.5, "error": f"Production model not found: {str(e)}"}
         
         # 2. Prepare input data (16 features)
         input_df = pd.DataFrame([request.dict()])
         
         # 3. Preprocess and Predict
-        # We need to use the same preprocessor as in training. 
-        # In a real app we'd save the preprocessor artifact to MLflow too.
-        # For this demo, let's use the data_service one (assuming it's consistent)
         preprocessor = data_service.get_preprocessing_pipeline()
         X_train = data_service.df.drop('y', axis=1) if 'y' in data_service.df.columns else data_service.df
         preprocessor.fit(X_train)
@@ -92,9 +103,9 @@ async def predict(request: PredictRequest):
         
         # 4. Get feature importances from run params (we logged top 10)
         importances = []
-        for k, v in latest_run.items():
-            if k.startswith('params.imp_') and v is not None:
-                importances.append({"label": k.replace('params.imp_', ''), "impact": f"+{float(v)*100:.1f}%", "type": "positive"})
+        for k, v in run_params.items():
+            if k.startswith('imp_') and v is not None:
+                importances.append({"label": k.replace('imp_', ''), "impact": f"+{float(v)*100:.1f}%", "type": "positive"})
         
         return {
             "prediction": "yes" if prediction == 1 else "no",
@@ -114,4 +125,78 @@ async def get_rf_analysis(n_estimators: int = 100, max_depth: str = "None"):
         return rf_analysis_service.run_full_analysis(base_n_estimators=n_estimators, base_max_depth=parsed_depth)
     except Exception as e:
         print(f"RF Analysis Error: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/registry/status")
+async def get_registry_status():
+    try:
+        client = MlflowClient()
+        prod_versions = client.get_latest_versions("mon_modele_production", stages=["Production"])
+        if not prod_versions:
+            return {"status": "error", "message": "No model in Production"}
+            
+        prod_version = prod_versions[0]
+        run = client.get_run(prod_version.run_id)
+        
+        return {
+            "status": "success",
+            "version": prod_version.version,
+            "run_id": prod_version.run_id,
+            "description": prod_version.description,
+            "metrics": run.data.metrics,
+            "params": run.data.params
+        }
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+@router.post("/registry/promote-best")
+async def promote_best_model():
+    try:
+        client = MlflowClient()
+        experiment = client.get_experiment_by_name('Bank_Marketing')
+        if not experiment:
+            return {"status": "error", "message": "No experiment found"}
+        
+        runs = client.search_runs(
+            experiment_ids=[experiment.experiment_id],
+            order_by=['metrics.accuracy DESC'],
+            max_results=1
+        )
+        if not runs:
+            return {"status": "error", "message": "No runs found"}
+            
+        best_run = runs[0]
+        run_id = best_run.info.run_id
+        
+        model_uri = f"runs:/{run_id}/model"
+        registered = mlflow.register_model(model_uri=model_uri, name="mon_modele_production")
+        
+        client.transition_model_version_stage(
+            name="mon_modele_production",
+            version=registered.version,
+            stage="Production",
+            archive_existing_versions=True
+        )
+        return {"status": "success", "message": f"Run {run_id} promoted to Production", "version": registered.version}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.post("/drift/simulate")
+async def simulate_drift_endpoint():
+    try:
+        import importlib.util, os
+        script_path = os.path.join(
+            os.path.dirname(__file__),   # app/api
+            "..", "..",                   # -> Back/
+            "scripts", "simulate_drift.py"
+        )
+        script_path = os.path.abspath(script_path)
+        spec = importlib.util.spec_from_file_location("simulate_drift", script_path)
+        module = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(module)
+        result = module.simulate_and_detect_drift()
+        return {"status": "success", "message": "Drift simulation completed", "details": result}
+    except Exception as e:
+        import traceback
+        traceback.print_exc()
         raise HTTPException(status_code=500, detail=str(e))

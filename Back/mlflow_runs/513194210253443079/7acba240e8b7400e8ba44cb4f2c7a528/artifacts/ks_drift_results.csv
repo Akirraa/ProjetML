@@ -1,0 +1,8 @@
+feature,ks_stat,p_value,drifted
+age,0.5022,0.0,True
+balance,0.7339,0.0,True
+day,0.008,0.7448,False
+duration,0.0149,0.0783,False
+campaign,0.0035,1.0,False
+pdays,0.0029,1.0,False
+previous,0.002,1.0,False
