@@ -1,0 +1,10 @@
+artifact_location: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/models/m-8008a69c62d644fe975e35a0c90d2fc1/artifacts
+creation_timestamp: 1779455350250
+experiment_id: '326793583795362966'
+last_updated_timestamp: 1779455371153
+model_id: m-8008a69c62d644fe975e35a0c90d2fc1
+model_type: null
+name: model
+source_run_id: ef4312d7f16e45fe9b58d1d03f3c834d
+status: 2
+status_message: null

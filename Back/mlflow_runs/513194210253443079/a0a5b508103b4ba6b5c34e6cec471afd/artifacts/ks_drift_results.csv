@@ -1,0 +1,8 @@
+feature,ks_stat,p_value,drifted,ref_mean,prod_mean
+age,0.508,0.0,True,40.93,55.98
+balance,0.7339,0.0,True,1361.05,-316.41
+day,0.008,0.7448,False,15.82,15.76
+duration,0.3189,0.0,True,256.89,444.88
+campaign,0.0035,1.0,False,2.77,2.76
+pdays,0.0029,1.0,False,40.18,40.27
+previous,0.002,1.0,False,0.58,0.58

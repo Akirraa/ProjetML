@@ -3,6 +3,12 @@ import { motion } from 'framer-motion';
 import { ShieldAlert, RefreshCw, Server, AlertTriangle, Database, Terminal, CheckCircle2, XCircle } from 'lucide-react';
 import { getRegistryStatus, simulateDrift, promoteBestModel } from '../utils/api';
 
+const formatPValue = (val) => {
+    if (val === 0) return '< 1e-300';
+    if (val < 0.0001) return val.toExponential(2);
+    return val.toFixed(4);
+};
+
 const MLOpsPanel = () => {
     const [registryStatus, setRegistryStatus] = useState(null);
     const [driftResult, setDriftResult] = useState(null);
@@ -121,8 +127,13 @@ const MLOpsPanel = () => {
                             <div className="p-4 bg-slate-900/50 rounded-xl border border-slate-800 mt-4">
                                 <p className="text-[10px] uppercase font-bold text-slate-500 tracking-widest mb-2">Model Configuration</p>
                                 <div className="text-xs font-mono text-slate-400 space-y-1">
-                                    <p>Algorithm: {registryStatus.params.model_type}</p>
-                                    <p>Description: {registryStatus.description || 'N/A'}</p>
+                                    <p>Algorithm: <span className="text-white font-bold">{registryStatus.params?.model_type || 'N/A'}</span></p>
+                                    {registryStatus.params && Object.entries(registryStatus.params)
+                                        .filter(([k]) => k !== 'model_type' && !k.startsWith('imp_'))
+                                        .map(([k, v]) => (
+                                            <p key={k}>{k}: <span className="text-slate-300">{v}</span></p>
+                                        ))
+                                    }
                                 </div>
                             </div>
                         </div>
@@ -208,6 +219,59 @@ const MLOpsPanel = () => {
                                     </div>
                                 </div>
 
+                                {driftResult.ks_results && driftResult.ks_results.length > 0 && (
+                                    <div className="mt-4">
+                                        <p className="text-slate-500 mb-2">Kolmogorov-Smirnov Test Details:</p>
+                                        <div className="overflow-x-auto border border-slate-800 rounded-lg">
+                                            <table className="min-w-full divide-y divide-slate-800 text-left text-[11px]">
+                                                <thead className="bg-slate-900/60 text-slate-400 font-bold uppercase tracking-wider">
+                                                    <tr>
+                                                        <th className="px-3 py-2">Feature</th>
+                                                        <th className="px-3 py-2">Status</th>
+                                                        <th className="px-3 py-2 text-right">KS Stat</th>
+                                                        <th className="px-3 py-2 text-right">P-Value</th>
+                                                        <th className="px-3 py-2 text-right">Ref Mean</th>
+                                                        <th className="px-3 py-2 text-right">Prod Mean</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-slate-800/40 bg-slate-950/20">
+                                                    {driftResult.ks_results.map((row) => (
+                                                        <tr 
+                                                            key={row.feature} 
+                                                            className={`transition-colors duration-150 ${
+                                                                row.drifted 
+                                                                    ? 'bg-rose-950/20 hover:bg-rose-950/30' 
+                                                                    : 'hover:bg-slate-900/30'
+                                                            }`}
+                                                        >
+                                                            <td className="px-3 py-2 font-bold text-white">{row.feature}</td>
+                                                            <td className="px-3 py-2">
+                                                                {row.drifted ? (
+                                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-rose-500/20 text-rose-400 border border-rose-500/30">
+                                                                        <AlertTriangle size={10} /> DRIFTED
+                                                                    </span>
+                                                                ) : (
+                                                                    <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[9px] font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                                                                        <CheckCircle2 size={10} /> STABLE
+                                                                    </span>
+                                                                )}
+                                                            </td>
+                                                            <td className="px-3 py-2 text-right text-slate-300">{row.ks_stat.toFixed(4)}</td>
+                                                            <td className="px-3 py-2 text-right font-medium">
+                                                                 <span className={row.p_value < 0.05 ? 'text-rose-400 font-bold' : 'text-slate-400'}>
+                                                                     {formatPValue(row.p_value)}
+                                                                 </span>
+                                                            </td>
+                                                            <td className="px-3 py-2 text-right text-slate-400">{row.ref_mean.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                                            <td className="px-3 py-2 text-right text-slate-300">{row.prod_mean.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                )}
+
                                 <div className="mt-4 border-t border-slate-800 pt-4">
                                     <p className="text-slate-500 mb-2">Automated Actions Taken:</p>
                                     {driftResult.retrain_status === 'triggered' ? (
@@ -218,12 +282,17 @@ const MLOpsPanel = () => {
                                     ) : driftResult.retrain_status === 'none' ? (
                                         <p className="text-emerald-400 flex items-center gap-2">
                                             <CheckCircle2 size={14} />
-                                            SAFE: Drift under 30% threshold. No retraining required.
+                                            SAFE: Drift under threshold. No retraining required.
+                                        </p>
+                                    ) : driftResult.retrain_status === 'warning' ? (
+                                        <p className="text-yellow-400 flex items-center gap-2">
+                                            <AlertTriangle size={14} />
+                                            WARNING: Drift detected but below critical threshold. Monitoring recommended.
                                         </p>
                                     ) : (
                                         <p className="text-rose-500 flex items-center gap-2">
                                             <XCircle size={14} />
-                                            ERROR: Failed to trigger API retraining.
+                                            ERROR: Failed to trigger API retraining. Check that the backend is running.
                                         </p>
                                     )}
                                 </div>

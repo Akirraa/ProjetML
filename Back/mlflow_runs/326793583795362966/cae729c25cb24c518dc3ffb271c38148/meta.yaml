@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/cae729c25cb24c518dc3ffb271c38148/artifacts
+end_time: 1779456235904
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: cae729c25cb24c518dc3ffb271c38148
+run_name: bald-perch-435
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779456201398
+status: 3
+tags: []
+user_id: unknown

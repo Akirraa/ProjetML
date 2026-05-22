@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/bbb8c2f025794cd9ad5f7be6eec383d6/artifacts
+end_time: 1779455381673
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: bbb8c2f025794cd9ad5f7be6eec383d6
+run_name: rare-ray-130
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779455341677
+status: 3
+tags: []
+user_id: unknown

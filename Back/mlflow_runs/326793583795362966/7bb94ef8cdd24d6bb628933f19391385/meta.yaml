@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/7bb94ef8cdd24d6bb628933f19391385/artifacts
+end_time: 1779453962778
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 7bb94ef8cdd24d6bb628933f19391385
+run_name: rf_baseline_d3
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779453945655
+status: 3
+tags: []
+user_id: rayan

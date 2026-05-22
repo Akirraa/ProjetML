@@ -29,3 +29,8 @@ class TrainingStatusResponse(BaseModel):
     progress: int
     metrics: Optional[Dict[str, float]] = None
     error: Optional[str] = None
+
+class DriftRequest(BaseModel):
+    features: Optional[List[str]] = ["age", "balance", "duration"]
+    threshold: Optional[float] = 0.30
+    warning: Optional[float] = 0.15

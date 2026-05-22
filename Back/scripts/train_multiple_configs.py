@@ -4,10 +4,13 @@ import mlflow
 import numpy as np
 import pandas as pd
 from sklearn.model_selection import train_test_split
-from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score
+from sklearn.metrics import accuracy_score, f1_score, precision_score, recall_score, roc_auc_score, ConfusionMatrixDisplay, classification_report
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.linear_model import LogisticRegression
 from imblearn.over_sampling import SMOTE
+import matplotlib.pyplot as plt
+import matplotlib
+matplotlib.use('Agg') # Headless mode
 
 # Fix python path to allow importing from app
 base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -81,13 +84,16 @@ def run_automated_experimentations():
             
             # Predict
             y_pred = model.predict(X_test)
+            y_prob = model.predict_proba(X_test)[:, 1] if hasattr(model, "predict_proba") else None
             
             # Metrics
             metrics = {
                 "accuracy": accuracy_score(y_test, y_pred),
                 "f1": f1_score(y_test, y_pred),
+                "f1_score": f1_score(y_test, y_pred),
                 "precision": precision_score(y_test, y_pred, zero_division=0),
-                "recall": recall_score(y_test, y_pred, zero_division=0)
+                "recall": recall_score(y_test, y_pred, zero_division=0),
+                "roc_auc": roc_auc_score(y_test, y_prob) if y_prob is not None else 0
             }
             
             # Log metrics
@@ -96,7 +102,26 @@ def run_automated_experimentations():
             # Log model
             mlflow.sklearn.log_model(model, "model")
             
-            print(f" -> Terminé avec succès. Accuracy : {metrics['accuracy']:.4f} | F1-Score : {metrics['f1']:.4f}")
+            # Log visual Confusion Matrix
+            fig, ax = plt.subplots(figsize=(8, 6))
+            ConfusionMatrixDisplay.from_predictions(y_test, y_pred, ax=ax)
+            cm_path = f"confusion_matrix_{run_name}.png"
+            plt.savefig(cm_path)
+            mlflow.log_artifact(cm_path)
+            plt.close(fig)
+            
+            # Log Classification Report
+            report = classification_report(y_test, y_pred)
+            cr_path = f"classification_report_{run_name}.txt"
+            with open(cr_path, 'w') as f:
+                f.write(report)
+            mlflow.log_artifact(cr_path)
+            
+            # Clean up local files
+            if os.path.exists(cm_path): os.remove(cm_path)
+            if os.path.exists(cr_path): os.remove(cr_path)
+            
+            print(f" -> Terminé avec succès. Accuracy : {metrics['accuracy']:.4f} | F1-Score : {metrics['f1']:.4f} | ROC-AUC : {metrics['roc_auc']:.4f}")
             
     print("\n=== Toutes les expérimentations ont été loggées dans MLflow UI ! ===")
 

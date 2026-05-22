@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/4b3ccb8437b54a3194e7069bb7c73c71/artifacts
+end_time: 1779455043901
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 4b3ccb8437b54a3194e7069bb7c73c71
+run_name: gaudy-crane-14
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779455004565
+status: 3
+tags: []
+user_id: unknown

@@ -1,0 +1,16 @@
+creation_timestamp: 1779455042770
+current_stage: None
+deployment_job_state: null
+description: null
+last_updated_timestamp: 1779455042770
+model_id: m-81bf1986acb64ec1ae46bf3b10684c3c
+name: mon_modele_production
+run_id: aabbf10abd324fadbee11467fb964e2a
+run_link: null
+source: models:/m-81bf1986acb64ec1ae46bf3b10684c3c
+status: READY
+status_message: null
+storage_location: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/models/m-81bf1986acb64ec1ae46bf3b10684c3c/artifacts
+user_id: null
+version: 19
+workspace: default

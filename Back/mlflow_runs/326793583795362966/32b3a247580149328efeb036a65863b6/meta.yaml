@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/32b3a247580149328efeb036a65863b6/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 32b3a247580149328efeb036a65863b6
+run_name: suave-crow-735
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779455916731
+status: 1
+tags: []
+user_id: unknown

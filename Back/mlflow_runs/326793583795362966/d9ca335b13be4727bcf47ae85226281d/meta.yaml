@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/d9ca335b13be4727bcf47ae85226281d/artifacts
+end_time: 1779454737664
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: d9ca335b13be4727bcf47ae85226281d
+run_name: angry-lamb-947
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779454725221
+status: 3
+tags: []
+user_id: unknown

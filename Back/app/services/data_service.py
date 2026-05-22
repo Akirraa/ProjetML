@@ -2,13 +2,16 @@ import pandas as pd
 import numpy as np
 import os
 import io
-from sklearn.preprocessing import StandardScaler, OneHotEncoder
+from sklearn.preprocessing import RobustScaler, OneHotEncoder
 from sklearn.compose import ColumnTransformer
 from imblearn.over_sampling import SMOTE
 
 class DataService:
     def __init__(self):
-        self.dataset_path = os.path.join("..", "Dataset", "bank-full.csv")
+        # Define absolute path to dataset based on this service file's location
+        service_dir = os.path.dirname(os.path.abspath(__file__))
+        base_dir = os.path.dirname(os.path.dirname(os.path.dirname(service_dir)))
+        self.dataset_path = os.path.join(base_dir, "Dataset", "bank-full.csv")
         self.df = None
         self.load_data()
 
@@ -87,7 +90,7 @@ class DataService:
             cat_cols.remove('y')
         
         preprocessor = ColumnTransformer([
-            ('num', StandardScaler(), num_cols),
+            ('num', RobustScaler(), num_cols),
             ('cat', OneHotEncoder(drop='first', handle_unknown='ignore'), cat_cols)
         ])
         

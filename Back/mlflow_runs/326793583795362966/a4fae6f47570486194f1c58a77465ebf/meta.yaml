@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/a4fae6f47570486194f1c58a77465ebf/artifacts
+end_time: 1779455380195
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: a4fae6f47570486194f1c58a77465ebf
+run_name: nervous-fox-271
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779455341271
+status: 3
+tags: []
+user_id: unknown

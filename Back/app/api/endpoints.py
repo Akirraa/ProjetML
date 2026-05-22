@@ -195,6 +195,23 @@ async def simulate_drift_endpoint():
         module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(module)
         result = module.simulate_and_detect_drift()
+
+        # If drift was detected but the script's own HTTP retrain call failed,
+        # trigger retraining directly via ml_service (no self-HTTP needed).
+        if result.get("dataset_drift") and result.get("retrain_status") != "triggered":
+            try:
+                run_id = ml_service.start_training(
+                    model_type="XGBoost",
+                    params={"n_estimators": 150, "learning_rate": 0.1, "max_depth": 4, "reg_alpha": 1.0, "reg_lambda": 1.0},
+                    experiment_name="Bank_Marketing"
+                )
+                result["retrain_status"] = "triggered"
+                result["retrain_run_id"] = run_id
+                print(f"Drift endpoint triggered retraining directly. Run ID: {run_id}")
+            except Exception as retrain_err:
+                print(f"Direct retraining also failed: {retrain_err}")
+                result["retrain_status"] = "error"
+
         return {"status": "success", "message": "Drift simulation completed", "details": result}
     except Exception as e:
         import traceback

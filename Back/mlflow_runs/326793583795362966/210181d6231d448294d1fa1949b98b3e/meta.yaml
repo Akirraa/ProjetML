@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/210181d6231d448294d1fa1949b98b3e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 210181d6231d448294d1fa1949b98b3e
+run_name: sedate-bug-726
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779456039221
+status: 1
+tags: []
+user_id: unknown

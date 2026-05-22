@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/2fb266cdf0c84e15bddcf9361bdd381e/artifacts
+end_time: 1779456237563
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 2fb266cdf0c84e15bddcf9361bdd381e
+run_name: serious-hare-825
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779456201609
+status: 3
+tags: []
+user_id: unknown

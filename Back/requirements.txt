@@ -9,3 +9,5 @@ python-multipart
 pydantic
 matplotlib
 seaborn
+evidently
+scipy

@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/276650065fff4a8b926d1d8e76b05d0c/artifacts
+end_time: 1779456235146
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 276650065fff4a8b926d1d8e76b05d0c
+run_name: ambitious-hawk-251
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779456201775
+status: 3
+tags: []
+user_id: unknown

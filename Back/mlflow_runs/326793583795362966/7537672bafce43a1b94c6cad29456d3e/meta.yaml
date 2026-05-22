@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/7537672bafce43a1b94c6cad29456d3e/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: 7537672bafce43a1b94c6cad29456d3e
+run_name: luminous-kit-708
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779455916643
+status: 1
+tags: []
+user_id: unknown

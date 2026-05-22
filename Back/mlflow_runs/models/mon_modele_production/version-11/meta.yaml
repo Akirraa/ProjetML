@@ -1,8 +1,8 @@
 creation_timestamp: 1779010885785
-current_stage: Production
+current_stage: Archived
 deployment_job_state: null
 description: null
-last_updated_timestamp: 1779010886082
+last_updated_timestamp: 1779454021419
 model_id: m-96d23a7b45a0450ca71e01250b1321dc
 name: mon_modele_production
 run_id: e2d785bd36c24aa1befd7a37abe4ecf8

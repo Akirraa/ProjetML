@@ -1,0 +1,14 @@
+artifact_uri: file:///C:\Users\rayan\Desktop\ProjetML\Back\mlflow_runs/326793583795362966/cc462d1c59c24827828fccf01dc21f2c/artifacts
+end_time: null
+entry_point_name: ''
+experiment_id: '326793583795362966'
+lifecycle_stage: active
+run_id: cc462d1c59c24827828fccf01dc21f2c
+run_name: sneaky-wolf-93
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1779456039728
+status: 1
+tags: []
+user_id: unknown

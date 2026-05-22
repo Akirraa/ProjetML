@@ -1,0 +1,17 @@
+[
+  {
+    "timestamp": "2026-05-22T13:03:50.648232Z",
+    "run_id": "aabbf10abd324fadbee11467fb964e2a",
+    "payload": {
+      "model_type": "XGBoost",
+      "params": {
+        "n_estimators": 150,
+        "learning_rate": 0.1,
+        "max_depth": 6
+      }
+    },
+    "response": {
+      "run_id": "aabbf10abd324fadbee11467fb964e2a"
+    }
+  }
+]
